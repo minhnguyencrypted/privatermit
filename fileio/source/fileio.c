@@ -4,7 +4,8 @@
 
 int fcopy(char const *finname, char const *foutname);
 int fcopyln(char const *finname, char const *foutname);
-int fwordcounter(char const *finname); 
+int fwordcount(char const *finname); 
+int fnewlncount(char const *finname);
 
 int fcopy (char const *finname, char const *foutname) {
     //Open files
@@ -12,7 +13,7 @@ int fcopy (char const *finname, char const *foutname) {
     FILE *fout = fopen(foutname,"w");
     
     //File(s) not found
-    if ((fin == NULL) || (fout == NULL)) return 0;
+    if (fin == NULL) return 0;
     
     //File(s) found
     for (int i=fgetc(fin); i!=EOF; i=fgetc(fin)) fputc (i,fout);
@@ -25,7 +26,7 @@ int fcopyln (char const *finname, char const *foutname) {
     FILE *fout = fopen(foutname,"w");
     
     //File(s) not found
-    if ((fin == NULL) || (fout == NULL)) return 0;
+    if (fin == NULL) return 0;
     
     //File(s) found
     int lncount = 1;
@@ -45,12 +46,12 @@ int fcopyln (char const *finname, char const *foutname) {
     return 1;
 }
 
-int fwordcounter(char const *finname) {
+int fwordcount(char const *finname) {
     //Open files
     FILE *fin = fopen(finname,"r");
     
     //File(s) not found
-    if ((fin == NULL)) return -1;
+    if (fin == NULL) return -1;
       
     //Word length
     int wlength = 0;
@@ -68,6 +69,24 @@ int fwordcounter(char const *finname) {
     return wcount;
 }
 
+int fnewlncount(char const *finname) {
+    //Open files
+    FILE *fin = fopen(finname,"r");
+    
+    //File(s) not found
+    if (fin == NULL) return -1;
+  
+    //Newline counting
+    int nwlncount = 0; 
+    int i=fgetc(fin);
+    while (!feof(fin)) {
+	if (i == '\n') nwlncount++;
+	i=fgetc(fin);
+    }
+    
+    return nwlncount;
+}
+
 int main(int argc, char *argv[]) {
     char inFileName[200] = "\0";
     char outFileName[200] = "\0";
@@ -81,22 +100,24 @@ int main(int argc, char *argv[]) {
 	strcpy (inFileName,argv[1]);
 	strcpy (outFileName,argv[2]);
     }
-
-/*
-    //Test file name
-    printf ("%s\n%s\n",inFileName,outFileName);
     
-    //File not found
-    if (!(fcopy(inFileName,outFileName))) printf ("Not Found\n");
-*/
-    
-    //File copy with line counter
-    if (!(fcopyln(inFileName,outFileName))) printf ("Not Found\n");
+    //File copying
+    int cpreslt = fcopy(inFileName,outFileName);
+    if (!cpreslt) printf ("Input File not found\n");
 
-    //Counting words
-    int fwcount = fwordcounter(inFileName);
-    if (fwcount == -1) printf ("File Not Found\n");
-    else printf ("%d\n",fwcount);
+    //File copying, showing line number
+    int cplnreslt = fcopyln(inFileName,outFileName);
+    if (!cplnreslt) printf ("Input File not found\n");
+
+    //File word counting
+    int fwcount = fwordcount(inFileName);
+    if (fwcount == -1) printf ("Input File not found\n");
+    else printf ("Word count: %d\n",fwcount);
+    
+    //File newline counting
+    int flncount = fnewlncount(inFileName);
+    if (flncount == -1) printf ("Input File not found\n");
+    else printf ("Newline count: %d\n",flncount);
 
     return 0;
 }
