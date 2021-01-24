@@ -17,6 +17,10 @@ int fcopy (char const *finname, char const *foutname) {
     
     //File(s) found
     for (int i=fgetc(fin); i!=EOF; i=fgetc(fin)) fputc (i,fout);
+    
+    //Close files
+    fclose(fin);
+    fclose(fout);
     return 1;
 }
 
@@ -43,6 +47,10 @@ int fcopyln (char const *finname, char const *foutname) {
 	    i = fgetc(fin);
 	}
     }
+    
+    //Close files
+    fclose(fin);
+    fclose(fout);
     return 1;
 }
 
@@ -66,6 +74,8 @@ int fwordcount(char const *finname) {
 	i=fgetc(fin);		
     }
     
+    //Close file
+    fclose(fin);
     return wcount;
 }
 
@@ -84,6 +94,8 @@ int fnewlncount(char const *finname) {
 	i=fgetc(fin);
     }
     
+    //Close file
+    fclose(fin);
     return nwlncount;
 }
 
